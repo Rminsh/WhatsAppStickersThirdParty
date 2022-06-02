@@ -65,7 +65,7 @@ struct StickerEmojis {
 /**
  *  Main class that deals with each individual sticker.
  */
-class Sticker {
+public class Sticker {
 
     let imageData: ImageData
     let emojis: [String]?
@@ -90,7 +90,7 @@ class Sticker {
      - .minFrameDurationTooShort if the minimum frame duration is too short (less than 8ms)
      - .totalAnimationDurationTooLong if the total animation duration is too long (more than 10s)
      */
-    init(contentsOfFile filename: String, emojis: [String]?) throws {
+    public init(contentsOfFile filename: String, emojis: [String]?) throws {
         self.imageData = try ImageData.imageDataIfCompliant(contentsOfFile: filename, isTray: false)
         self.emojis = try StickerEmojis.canonicalizedEmojis(rawEmojis: emojis)
     }

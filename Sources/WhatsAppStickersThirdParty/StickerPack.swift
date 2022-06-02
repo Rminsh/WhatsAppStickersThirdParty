@@ -11,7 +11,7 @@ import UIKit
 /**
  *  Represents a variety of errors related to stickers.
  */
-enum StickerPackError: Error {
+public enum StickerPackError: Error {
     case fileNotFound
     case emptyString
     case unsupportedImageFormat(String)
@@ -31,7 +31,7 @@ enum StickerPackError: Error {
 /**
  *  Main class that handles sticker packs, a set of stickers.
  */
-class StickerPack {
+public class StickerPack {
 
     let identifier: String
     let name: String
@@ -73,7 +73,16 @@ class StickerPack {
      - .incorrectImageSize if the tray image is not within the allowed size
      - .animatedImagesNotSupported if the tray image is animated
      */
-    init(identifier: String, name: String, publisher: String, trayImageFileName: String, animatedStickerPack: Bool?, publisherWebsite: String?, privacyPolicyWebsite: String?, licenseAgreementWebsite: String?) throws {
+    public init(
+        identifier: String,
+        name: String,
+        publisher: String,
+        trayImageFileName: String,
+        animatedStickerPack: Bool?,
+        publisherWebsite: String?,
+        privacyPolicyWebsite: String?,
+        licenseAgreementWebsite: String?
+    ) throws {
         guard !name.isEmpty && !publisher.isEmpty && !identifier.isEmpty else {
             throw StickerPackError.emptyString
         }
@@ -117,7 +126,15 @@ class StickerPack {
      - .incorrectImageSize if the tray image is not within the allowed size
      - .animatedImagesNotSupported if the tray image is animated
      */
-    init(identifier: String, name: String, publisher: String, trayImagePNGData: Data, publisherWebsite: String?, privacyPolicyWebsite: String?, licenseAgreementWebsite: String?) throws {
+    public init(
+        identifier: String,
+        name: String,
+        publisher: String,
+        trayImagePNGData: Data,
+        publisherWebsite: String?,
+        privacyPolicyWebsite: String?,
+        licenseAgreementWebsite: String?
+    ) throws {
         guard !name.isEmpty && !publisher.isEmpty && !identifier.isEmpty else {
             throw StickerPackError.emptyString
         }
@@ -154,7 +171,10 @@ class StickerPack {
      - .staticStickerPackWithAnimatedStickers if a static pack contains animated stickers
      - All exceptions from Sticker(contentsOfFile:emojis:)
      */
-    func addSticker(contentsOfFile filename: String, emojis: [String]?) throws {
+    public func addSticker(
+        contentsOfFile filename: String,
+        emojis: [String]?
+    ) throws {
         guard stickers.count <= Limits.MaxStickersPerPack else {
             throw StickerPackError.stickersNumOutsideAllowableRange
         }
@@ -185,7 +205,10 @@ class StickerPack {
      - .staticStickerPackWithAnimatedStickers if a static pack contains animated stickers
      - All exceptions from Sticker(imageData:type:emojis:)
      */
-    func addSticker(imageData: Data, type: ImageDataExtension, emojis: [String]?) throws {
+    public func addSticker(
+        imageData: Data,
+        type: ImageDataExtension, emojis: [String]?
+    ) throws {
         guard stickers.count <= Limits.MaxStickersPerPack else {
             throw StickerPackError.stickersNumOutsideAllowableRange
         }
@@ -210,7 +233,7 @@ class StickerPack {
      *    into a format that WhatsApp can read and WhatsApp is about to open. Called on the main
      *    queue.
      */
-    func sendToWhatsApp(completionHandler: @escaping (Bool) -> Void) {
+    public func sendToWhatsApp(completionHandler: @escaping (Bool) -> Void) {
         StickerPackManager.queue.async {
             var json: [String: Any] = [:]
             json["identifier"] = self.identifier

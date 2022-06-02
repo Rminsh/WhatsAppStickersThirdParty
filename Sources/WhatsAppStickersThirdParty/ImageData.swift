@@ -36,7 +36,7 @@ extension CGSize {
 /**
  *  Represents the two supported extensions for sticker images: png and webp.
  */
-enum ImageDataExtension: String {
+public enum ImageDataExtension: String {
     case png = "png"
     case webp = "webp"
 }
