@@ -9,20 +9,20 @@
 import UIKit
 
 public struct WAPacksLimits {
-    static let MaxStaticStickerFileSize: Int = 100 * 1024
-    static let MaxAnimatedStickerFileSize: Int = 500 * 1024
-    static let MaxTrayImageFileSize: Int = 50 * 1024
+    public static let MaxStaticStickerFileSize: Int = 100 * 1024
+    public static let MaxAnimatedStickerFileSize: Int = 500 * 1024
+    public static let MaxTrayImageFileSize: Int = 50 * 1024
 
-    static let MinAnimatedStickerFrameDurationMS: Int = 8
-    static let MaxAnimatedStickerTotalDurationMS: Int = 10000
+    public static let MinAnimatedStickerFrameDurationMS: Int = 8
+    public static let MaxAnimatedStickerTotalDurationMS: Int = 10000
 
-    static let TrayImageDimensions: CGSize = CGSize(width: 96, height: 96)
-    static let ImageDimensions: CGSize = CGSize(width: 512, height: 512)
+    public static let TrayImageDimensions: CGSize = CGSize(width: 96, height: 96)
+    public static let ImageDimensions: CGSize = CGSize(width: 512, height: 512)
 
-    static let MinStickersPerPack: Int = 3
-    static let MaxStickersPerPack: Int = 30
+    public static let MinStickersPerPack: Int = 3
+    public static let MaxStickersPerPack: Int = 30
 
-    static let MaxCharLimit128: Int = 128
+    public static let MaxCharLimit128: Int = 128
 
-    static let MaxEmojisCount: Int = 3
+    public static let MaxEmojisCount: Int = 3
 }
