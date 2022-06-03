@@ -44,7 +44,7 @@ public enum ImageDataExtension: String {
 /**
  *  Stores sticker image data along with its supported extension.
  */
-class ImageData {
+class WAImageData {
     let data: Data
     let type: ImageDataExtension
 
@@ -133,48 +133,48 @@ class ImageData {
         self.type = type
     }
 
-    static func imageDataIfCompliant(contentsOfFile filename: String, isTray: Bool) throws -> ImageData {
+    static func imageDataIfCompliant(contentsOfFile filename: String, isTray: Bool) throws -> WAImageData {
         let fileExtension: String = (filename as NSString).pathExtension
 
         guard let imageURL = Bundle.main.url(forResource: filename, withExtension: "") else {
-            throw StickerPackError.fileNotFound
+            throw WAStickerPackError.fileNotFound
         }
 
         let data = try Data(contentsOf: imageURL)
         guard let imageType = ImageDataExtension(rawValue: fileExtension) else {
-            throw StickerPackError.unsupportedImageFormat(fileExtension)
+            throw WAStickerPackError.unsupportedImageFormat(fileExtension)
         }
 
-        return try ImageData.imageDataIfCompliant(rawData: data, extensionType: imageType, isTray: isTray)
+        return try WAImageData.imageDataIfCompliant(rawData: data, extensionType: imageType, isTray: isTray)
     }
 
-    static func imageDataIfCompliant(rawData: Data, extensionType: ImageDataExtension, isTray: Bool) throws -> ImageData {
-        let imageData = ImageData(data: rawData, type: extensionType)
+    static func imageDataIfCompliant(rawData: Data, extensionType: ImageDataExtension, isTray: Bool) throws -> WAImageData {
+        let imageData = WAImageData(data: rawData, type: extensionType)
 
         guard imageData.bytesSize > 0 else {
-            throw StickerPackError.invalidImage
+            throw WAStickerPackError.invalidImage
         }
         if isTray {
             guard !imageData.animated else {
-                throw StickerPackError.animatedImagesNotSupported
+                throw WAStickerPackError.animatedImagesNotSupported
             }
 
-            guard imageData.bytesSize <= Limits.MaxTrayImageFileSize else {
-                throw StickerPackError.imageTooBig(imageData.bytesSize, false)
+            guard imageData.bytesSize <= WAPacksLimits.MaxTrayImageFileSize else {
+                throw WAStickerPackError.imageTooBig(imageData.bytesSize, false)
             }
 
-            guard imageData.image!.size == Limits.TrayImageDimensions else {
-                throw StickerPackError.incorrectImageSize(imageData.image!.size)
+            guard imageData.image!.size == WAPacksLimits.TrayImageDimensions else {
+                throw WAStickerPackError.incorrectImageSize(imageData.image!.size)
             }
         } else {
             let isAnimated = imageData.animated
-            guard (isAnimated && imageData.bytesSize <= Limits.MaxAnimatedStickerFileSize) ||
-                    (!isAnimated && imageData.bytesSize <= Limits.MaxStaticStickerFileSize) else {
-                throw StickerPackError.imageTooBig(imageData.bytesSize, isAnimated)
+            guard (isAnimated && imageData.bytesSize <= WAPacksLimits.MaxAnimatedStickerFileSize) ||
+                    (!isAnimated && imageData.bytesSize <= WAPacksLimits.MaxStaticStickerFileSize) else {
+                throw WAStickerPackError.imageTooBig(imageData.bytesSize, isAnimated)
             }
 
-            guard imageData.image!.size == Limits.ImageDimensions else {
-                throw StickerPackError.incorrectImageSize(imageData.image!.size)
+            guard imageData.image!.size == WAPacksLimits.ImageDimensions else {
+                throw WAStickerPackError.incorrectImageSize(imageData.image!.size)
             }
 
             /**

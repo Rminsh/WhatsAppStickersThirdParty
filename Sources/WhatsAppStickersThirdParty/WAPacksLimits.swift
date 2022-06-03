@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Limits {
+public struct WAPacksLimits {
     static let MaxStaticStickerFileSize: Int = 100 * 1024
     static let MaxAnimatedStickerFileSize: Int = 500 * 1024
     static let MaxTrayImageFileSize: Int = 50 * 1024

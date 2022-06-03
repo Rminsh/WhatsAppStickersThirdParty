@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Interoperability {
+struct WAInteroperability {
     private static let DefaultBundleIdentifier: String = "WA.WAStickersThirdParty"
     private static let PasteboardExpirationSeconds: TimeInterval = 60
     private static let PasteboardStickerPackDataType: String = "net.whatsapp.third-party.sticker-pack"

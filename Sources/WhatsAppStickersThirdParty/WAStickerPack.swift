@@ -11,7 +11,7 @@ import UIKit
 /**
  *  Represents a variety of errors related to stickers.
  */
-public enum StickerPackError: Error {
+public enum WAStickerPackError: Error {
     case fileNotFound
     case emptyString
     case unsupportedImageFormat(String)
@@ -31,18 +31,18 @@ public enum StickerPackError: Error {
 /**
  *  Main class that handles sticker packs, a set of stickers.
  */
-public class StickerPack {
+public class WAStickerPack {
 
     let identifier: String
     let name: String
     let publisher: String
-    let trayImage: ImageData
+    let trayImage: WAImageData
     let publisherWebsite: String?
     let privacyPolicyWebsite: String?
     let licenseAgreementWebsite: String?
     var animated: Bool
 
-    var stickers: [Sticker]
+    var stickers: [WASticker]
 
     var bytesSize: Int64 {
         var totalBytes: Int64 = Int64(name.utf8.count + publisher.utf8.count + trayImage.data.count)
@@ -84,18 +84,18 @@ public class StickerPack {
         licenseAgreementWebsite: String?
     ) throws {
         guard !name.isEmpty && !publisher.isEmpty && !identifier.isEmpty else {
-            throw StickerPackError.emptyString
+            throw WAStickerPackError.emptyString
         }
 
-        guard name.count <= Limits.MaxCharLimit128 && publisher.count <= Limits.MaxCharLimit128 && identifier.count <= Limits.MaxCharLimit128 else {
-            throw StickerPackError.stringTooLong
+        guard name.count <= WAPacksLimits.MaxCharLimit128 && publisher.count <= WAPacksLimits.MaxCharLimit128 && identifier.count <= WAPacksLimits.MaxCharLimit128 else {
+            throw WAStickerPackError.stringTooLong
         }
 
         self.identifier = identifier
         self.name = name
         self.publisher = publisher
 
-        let trayCompliantImageData: ImageData = try ImageData.imageDataIfCompliant(contentsOfFile: trayImageFileName, isTray: true)
+        let trayCompliantImageData: WAImageData = try WAImageData.imageDataIfCompliant(contentsOfFile: trayImageFileName, isTray: true)
         self.trayImage = trayCompliantImageData
 
         self.animated = animatedStickerPack ?? false
@@ -136,18 +136,18 @@ public class StickerPack {
         licenseAgreementWebsite: String?
     ) throws {
         guard !name.isEmpty && !publisher.isEmpty && !identifier.isEmpty else {
-            throw StickerPackError.emptyString
+            throw WAStickerPackError.emptyString
         }
 
-        guard name.count <= Limits.MaxCharLimit128 && publisher.count <= Limits.MaxCharLimit128 && identifier.count <= Limits.MaxCharLimit128 else {
-            throw StickerPackError.stringTooLong
+        guard name.count <= WAPacksLimits.MaxCharLimit128 && publisher.count <= WAPacksLimits.MaxCharLimit128 && identifier.count <= WAPacksLimits.MaxCharLimit128 else {
+            throw WAStickerPackError.stringTooLong
         }
 
         self.identifier = identifier
         self.name = name
         self.publisher = publisher
 
-        let trayCompliantImageData: ImageData = try ImageData.imageDataIfCompliant(rawData: trayImagePNGData, extensionType: .png, isTray: true)
+        let trayCompliantImageData: WAImageData = try WAImageData.imageDataIfCompliant(rawData: trayImagePNGData, extensionType: .png, isTray: true)
         self.trayImage = trayCompliantImageData
 
         self.animated = false
@@ -175,17 +175,17 @@ public class StickerPack {
         contentsOfFile filename: String,
         emojis: [String]?
     ) throws {
-        guard stickers.count <= Limits.MaxStickersPerPack else {
-            throw StickerPackError.stickersNumOutsideAllowableRange
+        guard stickers.count <= WAPacksLimits.MaxStickersPerPack else {
+            throw WAStickerPackError.stickersNumOutsideAllowableRange
         }
 
-        let sticker: Sticker = try Sticker(contentsOfFile: filename, emojis: emojis)
+        let sticker: WASticker = try WASticker(contentsOfFile: filename, emojis: emojis)
 
         guard sticker.imageData.animated == self.animated else {
             if self.animated {
-                throw StickerPackError.animatedStickerPackWithStaticStickers
+                throw WAStickerPackError.animatedStickerPackWithStaticStickers
             } else {
-                throw StickerPackError.staticStickerPackWithAnimatedStickers
+                throw WAStickerPackError.staticStickerPackWithAnimatedStickers
             }
         }
 
@@ -209,17 +209,17 @@ public class StickerPack {
         imageData: Data,
         type: ImageDataExtension, emojis: [String]?
     ) throws {
-        guard stickers.count <= Limits.MaxStickersPerPack else {
-            throw StickerPackError.stickersNumOutsideAllowableRange
+        guard stickers.count <= WAPacksLimits.MaxStickersPerPack else {
+            throw WAStickerPackError.stickersNumOutsideAllowableRange
         }
 
-        let sticker: Sticker = try Sticker(imageData: imageData, type: type, emojis: emojis)
+        let sticker: WASticker = try WASticker(imageData: imageData, type: type, emojis: emojis)
 
         guard sticker.imageData.animated == self.animated else {
             if self.animated {
-                throw StickerPackError.animatedStickerPackWithStaticStickers
+                throw WAStickerPackError.animatedStickerPackWithStaticStickers
             } else {
-                throw StickerPackError.staticStickerPackWithAnimatedStickers
+                throw WAStickerPackError.staticStickerPackWithAnimatedStickers
             }
         }
 
@@ -234,7 +234,7 @@ public class StickerPack {
      *    queue.
      */
     public func sendToWhatsApp(completionHandler: @escaping (Bool) -> Void) {
-        StickerPackManager.queue.async {
+        WAStickerPackManager.queue.async {
             var json: [String: Any] = [:]
             json["identifier"] = self.identifier
             json["name"] = self.name
@@ -261,7 +261,7 @@ public class StickerPack {
             }
             json["stickers"] = stickersArray
 
-            let result = Interoperability.send(json: json)
+            let result = WAInteroperability.send(json: json)
             DispatchQueue.main.async {
                 completionHandler(result)
             }

@@ -14,8 +14,8 @@ struct StickerEmojis {
 
         guard let rawEmojis = rawEmojis else { return nil }
 
-        if rawEmojis.count > Limits.MaxEmojisCount {
-          throw StickerPackError.tooManyEmojis
+        if rawEmojis.count > WAPacksLimits.MaxEmojisCount {
+          throw WAStickerPackError.tooManyEmojis
         }
 
         var canonicalizedEmojis: [String] = []
@@ -65,9 +65,9 @@ struct StickerEmojis {
 /**
  *  Main class that deals with each individual sticker.
  */
-public class Sticker {
+public class WASticker {
 
-    let imageData: ImageData
+    let imageData: WAImageData
     let emojis: [String]?
 
     var bytesSize: Int64 {
@@ -91,7 +91,7 @@ public class Sticker {
      - .totalAnimationDurationTooLong if the total animation duration is too long (more than 10s)
      */
     public init(contentsOfFile filename: String, emojis: [String]?) throws {
-        self.imageData = try ImageData.imageDataIfCompliant(contentsOfFile: filename, isTray: false)
+        self.imageData = try WAImageData.imageDataIfCompliant(contentsOfFile: filename, isTray: false)
         self.emojis = try StickerEmojis.canonicalizedEmojis(rawEmojis: emojis)
     }
 
@@ -111,13 +111,13 @@ public class Sticker {
      - .totalAnimationDurationTooLong if the total animation duration is too long (more than 10s)
      */
     init(imageData: Data, type: ImageDataExtension, emojis: [String]?) throws {
-        self.imageData = try ImageData.imageDataIfCompliant(rawData:imageData, extensionType: type, isTray: false)
+        self.imageData = try WAImageData.imageDataIfCompliant(rawData:imageData, extensionType: type, isTray: false)
         self.emojis = try StickerEmojis.canonicalizedEmojis(rawEmojis: emojis)
     }
 
     func copyToPasteboardAsImage() {
         if let image = imageData.image {
-            Interoperability.copyImageToPasteboard(image: image)
+            WAInteroperability.copyImageToPasteboard(image: image)
         }
     }
 }
