@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct WAInteroperability {
+public struct WAInteroperability {
     private static let DefaultBundleIdentifier: String = "WA.WAStickersThirdParty"
     private static let PasteboardExpirationSeconds: TimeInterval = 60
     private static let PasteboardStickerPackDataType: String = "net.whatsapp.third-party.sticker-pack"
@@ -17,7 +17,7 @@ struct WAInteroperability {
     static var iOSAppStoreLink: String?
     static var AndroidStoreLink: String?
 
-    static func canSend() -> Bool {
+    public static func canSend() -> Bool {
         return UIApplication.shared.canOpenURL(URL(string: "whatsapp://")!)
     }
     
